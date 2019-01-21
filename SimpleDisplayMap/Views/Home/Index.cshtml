@@ -1,0 +1,157 @@
+﻿@model IEnumerable<SimpleDisplayMap.Models.GPSData>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<style>
+
+    table.blueTable {
+        border: 1px solid #1C6EA4;
+        background-color: #EEEEEE;
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+    }
+
+        table.blueTable td, table.blueTable th {
+            border: 1px solid #AAAAAA;
+            padding: 3px 2px;
+        }
+
+        table.blueTable tbody td {
+            font-size: 13px;
+        }
+
+        table.blueTable tr:nth-child(even) {
+            background: #D0E4F5;
+        }
+
+        table.blueTable thead {
+            background: #1C6EA4;
+            background: -moz-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
+            background: -webkit-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
+            background: linear-gradient(to bottom, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
+            border-bottom: 2px solid #444444;
+        }
+
+            table.blueTable thead th {
+                font-size: 15px;
+                font-weight: bold;
+                color: #FFFFFF;
+                border-left: 2px solid #D0E4F5;
+            }
+
+                table.blueTable thead th:first-child {
+                    border-left: none;
+                }
+
+        table.blueTable tfoot {
+            font-size: 14px;
+            font-weight: bold;
+            color: #FFFFFF;
+            background: #D0E4F5;
+            background: -moz-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+            background: -webkit-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+            background: linear-gradient(to bottom, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+            border-top: 2px solid #444444;
+        }
+
+            table.blueTable tfoot td {
+                font-size: 14px;
+            }
+
+            table.blueTable tfoot .links {
+                text-align: right;
+            }
+
+                table.blueTable tfoot .links a {
+                    display: inline-block;
+                    background: #1C6EA4;
+                    color: #FFFFFF;
+                    padding: 2px 8px;
+                    border-radius: 5px;
+                }
+
+</style>
+
+
+<h2 style="background-color: Yellow;color: Blue; text-align: center; font-style: oblique">Satyaprakash Google Map Using Asp.net MVC</h2>  
+<fieldset>  
+    <legend style="font-family: Arial Black; color: blue; font-size: large;">Check Metro City Using Google Map</legend>  
+    <div id="SatyaMap" style="width: 1240px; height: 400px;">  
+        @*set google map size .*@  
+    </div>  
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7_zFQpPzaic8HihdeJ3n3_Unwcrd6yUQ"></script> @*api key after sign in your google account.*@  
+    <script type="text/javascript">  
+        var markers = @Html.Raw(ViewBag.Markers); //all string value of column properties to viewbag.  
+        window.onload = function () {  
+            var mapOptions = {  
+                center: new google.maps.LatLng(markers[0].lat, markers[0].lng), //which city will be shown.  
+                zoom: 14, //google map page zoom  
+                mapTypeId: google.maps.MapTypeId.ROADMAP //type of view.  
+            };  
+            var infoWindow = new google.maps.InfoWindow();  
+            var map = new google.maps.Map(document.getElementById("SatyaMap"), mapOptions);//pass div id and google map load values.  
+            for (i = 0; i < markers.length; i++) { //here load all city map name  
+                var data = markers[i];  
+                var myLatlng = new google.maps.LatLng(data.lat, data.lng); //here i assigned lat and long.  
+                var marker = new google.maps.Marker({  
+                    position: myLatlng, //lat and long value  
+                    map: map, //div id  
+                    title: data.title //city name  
+                });  
+                (function (marker, data) { //here city map description after click on it.  
+                    google.maps.event.addListener(marker, "click", function (e) {  
+                        infoWindow.setContent(data.description); //city description value  
+                        infoWindow.open(map, marker); //then pop will show  the description  
+                    });  
+                })(marker, data);  
+            }  
+        }  
+    </script>  
+</fieldset>  
+
+
+
+<table class="blueTable">
+    <thead>
+        <tr>
+            <th>Cab Name</th>
+            <th>Location</th>
+            <th>Speed in KM</th>
+            <th>Ignition Status</th>
+            
+        </tr>
+    </thead>
+   
+    <tbody>
+        @foreach (var items in Model)
+        {
+        <tr>
+            <td>@items.Name</td>
+            <td>@items.Location</td>
+            <td>@items.Speed</td>
+            <td>
+                @if (@items.ignition == '0')
+                {
+                    <img src="http://icons.iconarchive.com/icons/icons-land/play-stop-pause/256/Record-Normal-Red-icon.png" width="50px" />
+                }
+                else
+                {
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdts3DQ_fLcFyK4y5AUKphZkTD14s8glKMO3fmCMnZ8bNC0OW2" width="50px" />
+                }
+            </td>
+        </tr>
+        }
+            
+        </tbody>
+</table>
+
+
+
+  
+<footer>  
+    <p style="background-color: Yellow; font-weight: bold; color:blue; text-align: center; font-style: oblique">© @DateTime.Now.ToLocalTime()</p> @*Add Date Time*@  
+</footer>  
